@@ -42,7 +42,7 @@ After the batch finishes, the same workspace shows the final summary, including 
 1. Select the folder that contains the source images.
 2. Choose where the converted copies should be written.
 3. Pick the output format: `PNG`, `JPEG`, or `WebP`.
-4. Adjust the image quality slider for the selected conversion.
+4. Adjust the image quality value for the selected conversion.
 5. Decide whether to skip or overwrite existing output files.
 6. Start the batch and follow the live progress panel.
 
