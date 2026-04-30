@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ImageConvertr.Core/ImageConvertr.Core.csproj" />
+    <Project Path="src/ImageConvertr.App/ImageConvertr.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ImageConvertr.Tests/ImageConvertr.Tests.csproj" />
+  </Folder>
+</Solution>
