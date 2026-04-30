@@ -13,7 +13,7 @@ The project is aimed at everyday image-conversion jobs such as preparing web-rea
 - Adjust image quality for encoded output formats
 - Skip or overwrite existing files in the output folder
 - Track progress through live status updates and completion summaries
-- Support `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, and `.webp`
+- Supports `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, and `.webp`
 
 > Note: the current conversion workflow processes files from the selected input folder only. It does not recurse into nested subfolders.
 
