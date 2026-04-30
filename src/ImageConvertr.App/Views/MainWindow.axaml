@@ -1,0 +1,178 @@
+<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:ImageConvertr.App.ViewModels"
+		xmlns:models="using:ImageConvertr.Core.Models"
+		xmlns:conv="using:ImageConvertr.App.Converters"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="650"
+		x:Class="ImageConvertr.App.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
+		Icon="/Assets/AppIcon.ico"
+		Title="ImageConvertr by tsjdev-apps"
+		Width="960"
+		Height="550"
+		MinWidth="960"
+		MinHeight="550"
+		Background="#F5F7FA"
+		CanResize="False">
+
+	<Window.Resources>
+		<conv:LogLevelToBrushConverter x:Key="LogLevelToBrushConverter" />
+	</Window.Resources>
+
+	<Grid ColumnDefinitions="1.4*,0.9*"
+		  ColumnSpacing="24"
+		  Margin="12">
+		<Border Classes="card">
+			<StackPanel Spacing="20">
+				<StackPanel Spacing="4">
+					<TextBlock Classes="heading-large" Text="Batch setup" />
+					<TextBlock Classes="body-text" Text="Choose folders, select the target format, and tune the conversion quality." />
+				</StackPanel>
+
+				<StackPanel Spacing="8">
+					<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Input folder" />
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="6">
+						<TextBox Grid.Column="0"
+								 IsReadOnly="True"
+								 Text="{Binding ImageFolderPath}"
+								 PlaceholderText="Select the folder that contains your source images" />
+						<Button Grid.Column="1"
+								Command="{Binding SelectImageFolderCommand}"
+								IsEnabled="{Binding CanEditInputs}"
+								MinWidth="50"
+								ToolTip.Tip="Browse..."
+								Classes="Primary"
+								Theme="{StaticResource SolidButton}">
+							<PathIcon Width="18" Height="18" Data="M3 6H9L11 8H21V19H3Z" />
+						</Button>
+					</Grid>
+				</StackPanel>
+
+				<StackPanel Spacing="8">
+					<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Output folder" />
+					<Grid ColumnDefinitions="*,Auto"
+						  ColumnSpacing="6">
+						<TextBox Grid.Column="0"
+								 IsReadOnly="True"
+								 Text="{Binding OutputFolderPath}"
+								 PlaceholderText="Select where the converted images should be written" />
+						<Button Grid.Column="1"
+								Command="{Binding SelectOutputFolderCommand}"
+								IsEnabled="{Binding CanEditInputs}"
+								MinWidth="50"
+								ToolTip.Tip="Browse..."
+								Classes="Primary"
+								Theme="{StaticResource SolidButton}">
+							<PathIcon Width="18" Height="18" Data="M3 6H9L11 8H21V19H3Z" />
+						</Button>
+					</Grid>
+				</StackPanel>
+
+				<Grid ColumnDefinitions="*,170"
+					  ColumnSpacing="12">
+					<StackPanel Spacing="8">
+						<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Output format" />
+						<ComboBox ItemsSource="{Binding OutputFormats}"
+								  SelectedItem="{Binding SelectedOutputFormat}"
+								  IsEnabled="{Binding CanEditInputs}"
+								  HorizontalAlignment="Stretch">
+							<ComboBox.ItemTemplate>
+								<DataTemplate x:DataType="models:ImageOutputFormatOption">
+									<TextBlock Text="{Binding DisplayName}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</StackPanel>
+
+					<StackPanel Grid.Column="1" Spacing="8">
+						<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Image quality" />
+						<NumericUpDown ClipValueToMinMax="True"
+									   ParsingNumberStyle="Integer"
+									   FormatString="N0"
+									   Value="{Binding ImageQuality}"
+									   Increment="1"
+									   Minimum="0"
+									   Maximum="100"
+									   IsEnabled="{Binding CanEditInputs}" />
+					</StackPanel>
+				</Grid>
+
+				<Border Classes="panel">
+					<StackPanel Spacing="12">
+						<CheckBox Content="Overwrite existing files in the output folder"
+								  IsEnabled="{Binding CanEditInputs}"
+								  IsChecked="{Binding ShouldOverwriteExistingFiles}" />
+						<TextBlock Foreground="#64748B"
+								   Text="Leave this unchecked to skip conflicts and keep any files that already exist in the destination folder."
+								   TextWrapping="Wrap" />
+					</StackPanel>
+				</Border>
+
+				<Button Classes="Primary"
+						Theme="{StaticResource SolidButton}"
+						Command="{Binding ConvertImagesCommand}"
+						Content="{Binding StartButtonText}"
+						HorizontalAlignment="Stretch" />
+			</StackPanel>
+		</Border>
+
+		<Grid RowDefinitions="Auto,*,Auto"
+			  Grid.Column="1"
+			  RowSpacing="16">
+			<Border Grid.Row="0"
+					Classes="card">
+				<StackPanel Spacing="18">
+					<StackPanel>
+						<TextBlock Classes="heading-medium" Text="Live progress" />
+					</StackPanel>
+
+					<Border Classes="info">
+						<StackPanel Spacing="12">
+							<TextBlock FontWeight="SemiBold" Classes="accent" Text="{Binding ProgressSummary}" />
+							<ProgressBar Height="12"
+									 Foreground="#00BF63"
+									 Maximum="{Binding ProgressBarMaximum}"
+									 Value="{Binding ProgressBarValue}" />
+							<TextBlock Foreground="#00BF63"
+									   Text="{Binding ProgressStateText}" />
+						</StackPanel>
+					</Border>
+
+					<Border Classes="panel">
+						<StackPanel Spacing="8">
+							<TextBlock FontWeight="SemiBold"
+									   Foreground="#0F172A"
+									   Text="Latest activity" />
+							<TextBlock Text="{Binding LatestActivityMessage}"
+									   MinHeight="40"
+									   MaxHeight="40"
+									   MaxLines="2"
+									   TextWrapping="Wrap"
+									   TextTrimming="CharacterEllipsis"
+									   Foreground="{Binding LatestActivityLevel, Converter={StaticResource LogLevelToBrushConverter}}" />
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<Border Grid.Row="2"
+					Classes="card">
+				<StackPanel Spacing="12">
+					<TextBlock Classes="heading-medium" Text="Supported formats" />
+					<WrapPanel>
+						<Border Classes="tag"><TextBlock Text=".jpg" /></Border>
+						<Border Classes="tag"><TextBlock Text=".jpeg" /></Border>
+						<Border Classes="tag"><TextBlock Text=".png" /></Border>
+						<Border Classes="tag"><TextBlock Text=".gif" /></Border>
+						<Border Classes="tag"><TextBlock Text=".bmp" /></Border>
+						<Border Classes="tag"><TextBlock Text=".webp" /></Border>
+					</WrapPanel>
+				</StackPanel>
+			</Border>
+		</Grid>
+	</Grid>
+
+</Window>
