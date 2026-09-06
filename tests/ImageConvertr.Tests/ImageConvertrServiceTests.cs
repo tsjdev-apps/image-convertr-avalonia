@@ -40,29 +40,28 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(1, result.Skipped);
 		Assert.Equal(0, result.Failed);
 		AssertDecodableImage(outputPath);
-		Assert.Collection(
-			progress.Updates,
-			update =>
-			{
-				Assert.Equal(0, update.ProcessedCount);
-				Assert.Equal(2, update.TotalCount);
-				Assert.Null(update.Status);
-			},
-			update =>
-			{
-				Assert.Equal(1, update.ProcessedCount);
-				Assert.Equal(2, update.TotalCount);
-				Assert.Equal("camera.png", update.SourceFileName);
-				Assert.Equal("camera.jpg", update.TargetFileName);
-				Assert.Equal(ConversionStatus.Converted, update.Status);
-				Assert.Equal(ConversionErrorKind.None, update.ErrorKind);
-			},
-			update =>
-			{
-				Assert.Equal(2, update.ProcessedCount);
-				Assert.Equal(ConversionStatus.Skipped, update.Status);
-				Assert.Equal(ConversionErrorKind.UnsupportedFormat, update.ErrorKind);
-			});
+		Assert.Equal(3, progress.Updates.Count);
+		ImageConversionProgressUpdate batchStarted = progress.Updates[0];
+		Assert.Equal(0, batchStarted.ProcessedCount);
+		Assert.Equal(2, batchStarted.TotalCount);
+		Assert.Null(batchStarted.Status);
+
+		ImageConversionProgressUpdate[] fileUpdates = [.. progress.Updates.Skip(1)];
+		Assert.Equal([1, 2], fileUpdates.Select(update => update.ProcessedCount));
+		Assert.All(fileUpdates, update => Assert.Equal(2, update.TotalCount));
+
+		ImageConversionProgressUpdate converted = Assert.Single(
+			fileUpdates,
+			update => update.Status == ConversionStatus.Converted);
+		Assert.Equal("camera.png", converted.SourceFileName);
+		Assert.Equal("camera.jpg", converted.TargetFileName);
+		Assert.Equal(ConversionErrorKind.None, converted.ErrorKind);
+
+		ImageConversionProgressUpdate skipped = Assert.Single(
+			fileUpdates,
+			update => update.Status == ConversionStatus.Skipped);
+		Assert.Equal("notes.txt", skipped.SourceFileName);
+		Assert.Equal(ConversionErrorKind.UnsupportedFormat, skipped.ErrorKind);
 	}
 
 	/// <summary>
