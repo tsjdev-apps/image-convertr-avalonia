@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Window_Title" xml:space="preserve"><value>Image Convertr by tsjdev apps</value></data>
+  <data name="Main_Title" xml:space="preserve"><value>Image Convertr</value></data>
+  <data name="Main_Description" xml:space="preserve"><value>Convert images in batches and choose the format and quality that fit your needs.</value></data>
+  <data name="SourceFolder_Label" xml:space="preserve"><value>Source folder</value></data>
+  <data name="SourceFolder_Watermark" xml:space="preserve"><value>Select the folder that contains the images to convert</value></data>
+  <data name="SourceFolder_PickerTitle" xml:space="preserve"><value>Select the folder containing your images</value></data>
+  <data name="TargetFolder_Label" xml:space="preserve"><value>Target folder</value></data>
+  <data name="TargetFolder_Watermark" xml:space="preserve"><value>Select where converted images should be saved</value></data>
+  <data name="TargetFolder_PickerTitle" xml:space="preserve"><value>Select the output folder</value></data>
+  <data name="Browse_ToolTip" xml:space="preserve"><value>Browse...</value></data>
+  <data name="TargetFormat_Label" xml:space="preserve"><value>Target format</value></data>
+  <data name="ImageQuality_Label" xml:space="preserve"><value>Image quality</value></data>
+  <data name="ImageQuality_Description" xml:space="preserve"><value>Quality applies to JPEG and WebP output. PNG output remains lossless.</value></data>
+  <data name="OverwriteFiles_Label" xml:space="preserve"><value>Overwrite existing files in the target folder</value></data>
+  <data name="OverwriteFiles_Description" xml:space="preserve"><value>Leave this unchecked to skip conflicts and keep files that already exist in the destination folder.</value></data>
+  <data name="ConvertImages_Button" xml:space="preserve"><value>Convert images</value></data>
+  <data name="ConvertingImages_Button" xml:space="preserve"><value>Converting images...</value></data>
+  <data name="Validation_SourceFolderRequired" xml:space="preserve"><value>No source folder was selected.</value></data>
+  <data name="Validation_TargetFolderRequired" xml:space="preserve"><value>No target folder was selected.</value></data>
+  <data name="Progress_Title" xml:space="preserve"><value>Live progress</value></data>
+  <data name="Progress_ProcessedFile" xml:space="preserve"><value>{0} / {1} file processed</value></data>
+  <data name="Progress_ProcessedFiles" xml:space="preserve"><value>{0} / {1} files processed</value></data>
+  <data name="Progress_HistoryTitle" xml:space="preserve"><value>Conversion history</value></data>
+  <data name="Progress_NoFiles" xml:space="preserve"><value>No files have been processed yet.</value></data>
+  <data name="ConversionStatus_Converted" xml:space="preserve"><value>Converted</value></data>
+  <data name="ConversionStatus_Skipped" xml:space="preserve"><value>Skipped</value></data>
+  <data name="ConversionStatus_Overwritten" xml:space="preserve"><value>Overwritten</value></data>
+  <data name="ConversionStatus_Failed" xml:space="preserve"><value>Failed</value></data>
+  <data name="ConversionResult_Target" xml:space="preserve"><value>→ {0}</value></data>
+  <data name="ConversionResult_Formats" xml:space="preserve"><value>{0} → {1}</value></data>
+  <data name="ConversionResult_Error" xml:space="preserve"><value>{0} — {1}</value></data>
+  <data name="ConversionError_TargetExists" xml:space="preserve"><value>Target file already exists</value></data>
+  <data name="ConversionError_SourceMatchesTarget" xml:space="preserve"><value>Source and target file are identical</value></data>
+  <data name="ConversionError_UnsupportedFormat" xml:space="preserve"><value>Unsupported image format</value></data>
+  <data name="ConversionError_DecodeFailed" xml:space="preserve"><value>Image could not be decoded</value></data>
+  <data name="ConversionError_EncodeFailed" xml:space="preserve"><value>Image could not be encoded</value></data>
+  <data name="ConversionError_Io" xml:space="preserve"><value>A file could not be read or written</value></data>
+  <data name="ConversionError_AccessDenied" xml:space="preserve"><value>Access to a file was denied</value></data>
+  <data name="ConversionError_Generic" xml:space="preserve"><value>Image could not be converted</value></data>
+  <data name="ConversionError_InvalidPath" xml:space="preserve"><value>One of the selected folder paths is invalid.</value></data>
+  <data name="ConversionError_BatchFailed" xml:space="preserve"><value>The conversion was stopped: {0}</value></data>
+  <data name="Summary_Title" xml:space="preserve"><value>Summary</value></data>
+  <data name="Summary_Completed" xml:space="preserve"><value>Completed · {0} converted · {1} overwritten · {2} skipped · {3} failed · {4} MB saved</value></data>
+</root>

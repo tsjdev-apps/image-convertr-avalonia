@@ -13,7 +13,7 @@ sealed class Program
 	/// </summary>
 	/// <param name="args">The command-line arguments passed to the application.</param>
 	[STAThread]
-	public static void Main(string[] args) 
+	public static void Main(string[] args)
 		=> BuildAvaloniaApp()
 			.StartWithClassicDesktopLifetime(args);
 

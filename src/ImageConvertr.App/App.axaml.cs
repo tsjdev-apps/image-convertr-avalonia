@@ -43,7 +43,7 @@ public partial class App : Application
 
 		base.OnFrameworkInitializationCompleted();
 	}
-	
+
 	/// <summary>
 	/// Configures all application services and view models.
 	/// </summary>

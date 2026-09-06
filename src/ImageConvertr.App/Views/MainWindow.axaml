@@ -2,177 +2,233 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:vm="using:ImageConvertr.App.ViewModels"
 		xmlns:models="using:ImageConvertr.Core.Models"
-		xmlns:conv="using:ImageConvertr.App.Converters"
+		xmlns:localization="using:ImageConvertr.App.Resources.Localization"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="650"
+		mc:Ignorable="d"
+		d:DesignWidth="1120"
+		d:DesignHeight="630"
 		x:Class="ImageConvertr.App.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
 		Icon="/Assets/AppIcon.ico"
-		Title="ImageConvertr by tsjdev-apps"
-		Width="960"
-		Height="550"
-		MinWidth="960"
-		MinHeight="550"
-		Background="#F5F7FA"
-		CanResize="False">
+		Title="{x:Static localization:Strings.Window_Title}"
+		Width="1120"
+		Height="630"
+		MinWidth="900"
+		MinHeight="560"
+		Background="{DynamicResource AppBackgroundBrush}"
+		CanResize="True">
 
-	<Window.Resources>
-		<conv:LogLevelToBrushConverter x:Key="LogLevelToBrushConverter" />
-	</Window.Resources>
-
-	<Grid ColumnDefinitions="1.4*,0.9*"
-		  ColumnSpacing="24"
-		  Margin="12">
+	<Grid ColumnDefinitions="1.35*,1*"
+		  ColumnSpacing="22"
+		  Margin="14">
 		<Border Classes="card">
-			<StackPanel Spacing="20">
-				<StackPanel Spacing="4">
-					<TextBlock Classes="heading-large" Text="Batch setup" />
-					<TextBlock Classes="body-text" Text="Choose folders, select the target format, and tune the conversion quality." />
+			<Grid RowDefinitions="Auto,*,Auto"
+				  RowSpacing="18">
+				<StackPanel Grid.Row="0" Spacing="4">
+					<TextBlock Classes="heading-large"
+							   Text="{x:Static localization:Strings.Main_Title}" />
+					<TextBlock Classes="body-text"
+							   Text="{x:Static localization:Strings.Main_Description}"
+							   TextWrapping="Wrap" />
 				</StackPanel>
 
-				<StackPanel Spacing="8">
-					<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Input folder" />
-					<Grid ColumnDefinitions="*,Auto"
-						  ColumnSpacing="6">
-						<TextBox Grid.Column="0"
-								 IsReadOnly="True"
-								 Text="{Binding ImageFolderPath}"
-								 PlaceholderText="Select the folder that contains your source images" />
-						<Button Grid.Column="1"
-								Command="{Binding SelectImageFolderCommand}"
-								IsEnabled="{Binding CanEditInputs}"
-								MinWidth="50"
-								ToolTip.Tip="Browse..."
-								Classes="Primary"
-								Theme="{StaticResource SolidButton}">
-							<PathIcon Width="18" Height="18" Data="M3 6H9L11 8H21V19H3Z" />
-						</Button>
-					</Grid>
-				</StackPanel>
+				<ScrollViewer Grid.Row="1"
+							  HorizontalScrollBarVisibility="Disabled"
+							  VerticalScrollBarVisibility="Auto">
+					<StackPanel Spacing="16">
+						<StackPanel Spacing="7">
+							<TextBlock Classes="field-label"
+									   Text="{x:Static localization:Strings.SourceFolder_Label}" />
+							<Grid ColumnDefinitions="*,Auto" ColumnSpacing="7">
+								<TextBox Grid.Column="0"
+										 IsReadOnly="True"
+										 Text="{Binding ImageFolderPath}"
+										 PlaceholderText="{x:Static localization:Strings.SourceFolder_Watermark}" />
+								<Button Grid.Column="1"
+										Command="{Binding SelectImageFolderCommand}"
+										IsEnabled="{Binding CanEditInputs}"
+										MinWidth="50"
+										ToolTip.Tip="{x:Static localization:Strings.Browse_ToolTip}"
+										Classes="Primary"
+										Theme="{StaticResource SolidButton}">
+									<PathIcon Width="18"
+											  Height="18"
+											  Data="M3 6H9L11 8H21V19H3Z" />
+								</Button>
+							</Grid>
+						</StackPanel>
 
-				<StackPanel Spacing="8">
-					<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Output folder" />
-					<Grid ColumnDefinitions="*,Auto"
-						  ColumnSpacing="6">
-						<TextBox Grid.Column="0"
-								 IsReadOnly="True"
-								 Text="{Binding OutputFolderPath}"
-								 PlaceholderText="Select where the converted images should be written" />
-						<Button Grid.Column="1"
-								Command="{Binding SelectOutputFolderCommand}"
-								IsEnabled="{Binding CanEditInputs}"
-								MinWidth="50"
-								ToolTip.Tip="Browse..."
-								Classes="Primary"
-								Theme="{StaticResource SolidButton}">
-							<PathIcon Width="18" Height="18" Data="M3 6H9L11 8H21V19H3Z" />
-						</Button>
-					</Grid>
-				</StackPanel>
+						<StackPanel Spacing="7">
+							<TextBlock Classes="field-label"
+									   Text="{x:Static localization:Strings.TargetFolder_Label}" />
+							<Grid ColumnDefinitions="*,Auto" ColumnSpacing="7">
+								<TextBox Grid.Column="0"
+										 IsReadOnly="True"
+										 Text="{Binding OutputFolderPath}"
+										 PlaceholderText="{x:Static localization:Strings.TargetFolder_Watermark}" />
+								<Button Grid.Column="1"
+										Command="{Binding SelectOutputFolderCommand}"
+										IsEnabled="{Binding CanEditInputs}"
+										MinWidth="50"
+										ToolTip.Tip="{x:Static localization:Strings.Browse_ToolTip}"
+										Classes="Primary"
+										Theme="{StaticResource SolidButton}">
+									<PathIcon Width="18"
+											  Height="18"
+											  Data="M3 6H9L11 8H21V19H3Z" />
+								</Button>
+							</Grid>
+						</StackPanel>
 
-				<Grid ColumnDefinitions="*,170"
-					  ColumnSpacing="12">
-					<StackPanel Spacing="8">
-						<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Output format" />
-						<ComboBox ItemsSource="{Binding OutputFormats}"
-								  SelectedItem="{Binding SelectedOutputFormat}"
-								  IsEnabled="{Binding CanEditInputs}"
-								  HorizontalAlignment="Stretch">
-							<ComboBox.ItemTemplate>
-								<DataTemplate x:DataType="models:ImageOutputFormatOption">
-									<TextBlock Text="{Binding DisplayName}" />
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
-						</ComboBox>
-					</StackPanel>
+						<Grid ColumnDefinitions="*,180" ColumnSpacing="14">
+							<StackPanel Spacing="7">
+								<TextBlock Classes="field-label"
+										   Text="{x:Static localization:Strings.TargetFormat_Label}" />
+								<ComboBox ItemsSource="{Binding OutputFormats}"
+										  SelectedItem="{Binding SelectedOutputFormat}"
+										  IsEnabled="{Binding CanEditInputs}"
+										  HorizontalAlignment="Stretch">
+									<ComboBox.ItemTemplate>
+										<DataTemplate x:DataType="models:ImageOutputFormatOption">
+											<TextBlock Text="{Binding DisplayName}" />
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
+							</StackPanel>
 
-					<StackPanel Grid.Column="1" Spacing="8">
-						<TextBlock FontWeight="SemiBold" Foreground="#1E293B" Text="Image quality" />
-						<NumericUpDown ClipValueToMinMax="True"
-									   ParsingNumberStyle="Integer"
-									   FormatString="N0"
-									   Value="{Binding ImageQuality}"
-									   Increment="1"
-									   Minimum="0"
-									   Maximum="100"
-									   IsEnabled="{Binding CanEditInputs}" />
-					</StackPanel>
-				</Grid>
+							<StackPanel Grid.Column="1" Spacing="7">
+								<TextBlock Classes="field-label"
+										   Text="{x:Static localization:Strings.ImageQuality_Label}" />
+								<NumericUpDown ClipValueToMinMax="True"
+											   ParsingNumberStyle="Integer"
+											   FormatString="N0"
+											   Value="{Binding ImageQuality}"
+											   Increment="1"
+											   Minimum="0"
+											   Maximum="100"
+											   IsEnabled="{Binding CanEditInputs}" />
+							</StackPanel>
+						</Grid>
 
-				<Border Classes="panel">
-					<StackPanel Spacing="12">
-						<CheckBox Content="Overwrite existing files in the output folder"
-								  IsEnabled="{Binding CanEditInputs}"
-								  IsChecked="{Binding ShouldOverwriteExistingFiles}" />
-						<TextBlock Foreground="#64748B"
-								   Text="Leave this unchecked to skip conflicts and keep any files that already exist in the destination folder."
+						<TextBlock Classes="help-text"
+								   Margin="0,-8,0,0"
+								   Text="{x:Static localization:Strings.ImageQuality_Description}"
+								   TextWrapping="Wrap" />
+
+						<Border Classes="panel">
+							<StackPanel Spacing="9">
+								<CheckBox Content="{x:Static localization:Strings.OverwriteFiles_Label}"
+										  IsEnabled="{Binding CanEditInputs}"
+										  IsChecked="{Binding ShouldOverwriteExistingFiles}" />
+								<TextBlock Classes="help-text"
+										   Text="{x:Static localization:Strings.OverwriteFiles_Description}"
+										   TextWrapping="Wrap" />
+							</StackPanel>
+						</Border>
+
+						<TextBlock Classes="validation-text"
+								   IsVisible="{Binding HasValidationMessage}"
+								   Text="{Binding ValidationMessage}"
 								   TextWrapping="Wrap" />
 					</StackPanel>
-				</Border>
+				</ScrollViewer>
 
-				<Button Classes="Primary"
+				<Button Grid.Row="2"
+						Classes="Primary"
 						Theme="{StaticResource SolidButton}"
 						Command="{Binding ConvertImagesCommand}"
 						Content="{Binding StartButtonText}"
 						HorizontalAlignment="Stretch" />
-			</StackPanel>
+			</Grid>
 		</Border>
 
-		<Grid RowDefinitions="Auto,*,Auto"
-			  Grid.Column="1"
-			  RowSpacing="16">
-			<Border Grid.Row="0"
-					Classes="card">
-				<StackPanel Spacing="18">
-					<StackPanel>
-						<TextBlock Classes="heading-medium" Text="Live progress" />
-					</StackPanel>
+		<Border Grid.Column="1" Classes="card">
+			<Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="14">
+				<TextBlock Grid.Row="0"
+						   Classes="heading-medium"
+						   Text="{x:Static localization:Strings.Progress_Title}" />
 
-					<Border Classes="info">
-						<StackPanel Spacing="12">
-							<TextBlock FontWeight="SemiBold" Classes="accent" Text="{Binding ProgressSummary}" />
-							<ProgressBar Height="12"
-									 Foreground="#00BF63"
-									 Maximum="{Binding ProgressBarMaximum}"
-									 Value="{Binding ProgressBarValue}" />
-							<TextBlock Foreground="#00BF63"
-									   Text="{Binding ProgressStateText}" />
-						</StackPanel>
-					</Border>
-
-					<Border Classes="panel">
-						<StackPanel Spacing="8">
+				<Border Grid.Row="1" Classes="progress-panel">
+					<Grid RowDefinitions="Auto,Auto" RowSpacing="10">
+						<Grid ColumnDefinitions="*,Auto">
 							<TextBlock FontWeight="SemiBold"
-									   Foreground="#0F172A"
-									   Text="Latest activity" />
-							<TextBlock Text="{Binding LatestActivityMessage}"
-									   MinHeight="40"
-									   MaxHeight="40"
-									   MaxLines="2"
-									   TextWrapping="Wrap"
-									   TextTrimming="CharacterEllipsis"
-									   Foreground="{Binding LatestActivityLevel, Converter={StaticResource LogLevelToBrushConverter}}" />
-						</StackPanel>
-					</Border>
-				</StackPanel>
-			</Border>
+									   Classes="accent"
+									   Text="{Binding ProgressSummary}" />
+							<TextBlock Grid.Column="1"
+									   FontWeight="SemiBold"
+									   Classes="accent"
+									   Text="{Binding ProgressStateText}" />
+						</Grid>
+						<ProgressBar Grid.Row="1"
+								 Height="10"
+								 Maximum="100"
+								 Value="{Binding ProgressPercentage}" />
+					</Grid>
+				</Border>
 
-			<Border Grid.Row="2"
-					Classes="card">
-				<StackPanel Spacing="12">
-					<TextBlock Classes="heading-medium" Text="Supported formats" />
-					<WrapPanel>
-						<Border Classes="tag"><TextBlock Text=".jpg" /></Border>
-						<Border Classes="tag"><TextBlock Text=".jpeg" /></Border>
-						<Border Classes="tag"><TextBlock Text=".png" /></Border>
-						<Border Classes="tag"><TextBlock Text=".gif" /></Border>
-						<Border Classes="tag"><TextBlock Text=".bmp" /></Border>
-						<Border Classes="tag"><TextBlock Text=".webp" /></Border>
-					</WrapPanel>
-				</StackPanel>
-			</Border>
-		</Grid>
+				<TextBlock Grid.Row="2"
+						   Classes="section-label"
+						   Text="{x:Static localization:Strings.Progress_HistoryTitle}" />
+
+				<Grid Grid.Row="3">
+					<TextBlock IsVisible="{Binding IsConversionHistoryEmpty}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"
+							   Classes="body-text"
+							   Text="{x:Static localization:Strings.Progress_NoFiles}" />
+
+					<ListBox x:Name="ConversionHistoryListBox"
+							 IsVisible="{Binding HasConversionHistory}"
+							 ItemsSource="{Binding ConversionHistory}"
+							 Background="Transparent"
+							 BorderThickness="0"
+							 Padding="0"
+							 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+							 ScrollViewer.VerticalScrollBarVisibility="Auto">
+						<ListBox.Styles>
+							<Style Selector="ListBoxItem">
+								<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+								<Setter Property="Padding" Value="0" />
+								<Setter Property="Margin" Value="0" />
+							</Style>
+						</ListBox.Styles>
+						<ListBox.ItemTemplate>
+							<DataTemplate x:DataType="vm:ConversionHistoryEntry">
+								<Border Classes="history-entry"
+										Classes.success="{Binding IsSuccessful}"
+										Classes.skipped="{Binding IsSkipped}"
+										Classes.failed="{Binding IsFailed}"
+										Classes.summary="{Binding IsSummary}"
+										ToolTip.Tip="{Binding SourceFileName}">
+									<Grid ColumnDefinitions="20,*" ColumnSpacing="8">
+										<TextBlock Classes="status-symbol"
+												   Text="{Binding StatusSymbol}" />
+										<StackPanel Grid.Column="1" Spacing="1">
+											<TextBlock FontWeight="SemiBold"
+													   Text="{Binding SourceFileName}"
+													   TextTrimming="CharacterEllipsis"
+													   MaxLines="1" />
+											<TextBlock Classes="history-result"
+													   Text="{Binding ResultText}"
+													   TextWrapping="Wrap"
+													   MaxLines="2"
+													   TextTrimming="CharacterEllipsis" />
+											<TextBlock Classes="history-meta"
+													   Text="{Binding DetailText}"
+													   TextTrimming="CharacterEllipsis"
+													   MaxLines="1" />
+											<TextBlock Classes="history-meta"
+													   IsVisible="{Binding HasFileSizeText}"
+													   Text="{Binding FileSizeText}" />
+										</StackPanel>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</Grid>
+			</Grid>
+		</Border>
 	</Grid>
-
 </Window>

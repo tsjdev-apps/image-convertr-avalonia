@@ -1,131 +1,175 @@
 <Application xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 x:Class="ImageConvertr.App.App"
 			 xmlns:semi="https://irihi.tech/semi"
-			 RequestedThemeVariant="Light">
+			 xmlns:localization="using:ImageConvertr.App.Resources.Localization"
+			 x:Class="ImageConvertr.App.App"
+			 RequestedThemeVariant="Default">
 
 	<Application.Resources>
-		<SolidColorBrush x:Key="ButtonSolidPrimaryBackground" Color="#00BF63" />
-		<SolidColorBrush x:Key="ButtonSolidPrimaryBorderBrush" Color="#00BF63" />
-		<SolidColorBrush x:Key="ButtonSolidPrimaryPointeroverBackground" Color="#00A957" />
-		<SolidColorBrush x:Key="ButtonSolidPrimaryPointeroverBorderBrush" Color="#00A957" />
-		<SolidColorBrush x:Key="ButtonSolidPrimaryPressedBackground" Color="#008F4A" />
-		<SolidColorBrush x:Key="ButtonSolidPrimaryPressedBorderBrush" Color="#008F4A" />
+		<ResourceDictionary>
+			<ResourceDictionary.ThemeDictionaries>
+				<ResourceDictionary x:Key="Light">
+					<SolidColorBrush x:Key="AppBackgroundBrush" Color="#F5F7FA" />
+					<SolidColorBrush x:Key="CardBackgroundBrush" Color="#FFFFFF" />
+					<SolidColorBrush x:Key="PanelBackgroundBrush" Color="#F8FAFC" />
+					<SolidColorBrush x:Key="ProgressBackgroundBrush" Color="#E8FFF2" />
+					<SolidColorBrush x:Key="SummaryBackgroundBrush" Color="#F0FFF6" />
+					<SolidColorBrush x:Key="SurfaceBorderBrush" Color="#DCE4ED" />
+					<SolidColorBrush x:Key="PrimaryTextBrush" Color="#0F172A" />
+					<SolidColorBrush x:Key="SecondaryTextBrush" Color="#475569" />
+					<SolidColorBrush x:Key="MutedTextBrush" Color="#64748B" />
+					<SolidColorBrush x:Key="ErrorTextBrush" Color="#B91C1C" />
+					<SolidColorBrush x:Key="SkippedTextBrush" Color="#64748B" />
+					<SolidColorBrush x:Key="ProgressTrackBrush" Color="#CFF7DF" />
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Dark">
+					<SolidColorBrush x:Key="AppBackgroundBrush" Color="#0F172A" />
+					<SolidColorBrush x:Key="CardBackgroundBrush" Color="#172033" />
+					<SolidColorBrush x:Key="PanelBackgroundBrush" Color="#1E293B" />
+					<SolidColorBrush x:Key="ProgressBackgroundBrush" Color="#123629" />
+					<SolidColorBrush x:Key="SummaryBackgroundBrush" Color="#153A2B" />
+					<SolidColorBrush x:Key="SurfaceBorderBrush" Color="#334155" />
+					<SolidColorBrush x:Key="PrimaryTextBrush" Color="#F8FAFC" />
+					<SolidColorBrush x:Key="SecondaryTextBrush" Color="#CBD5E1" />
+					<SolidColorBrush x:Key="MutedTextBrush" Color="#94A3B8" />
+					<SolidColorBrush x:Key="ErrorTextBrush" Color="#FDA4AF" />
+					<SolidColorBrush x:Key="SkippedTextBrush" Color="#CBD5E1" />
+					<SolidColorBrush x:Key="ProgressTrackBrush" Color="#275743" />
+				</ResourceDictionary>
+			</ResourceDictionary.ThemeDictionaries>
 
-		<SolidColorBrush x:Key="CheckBoxCheckedDefaultBackground" Color="#00BF63" />
-		<SolidColorBrush x:Key="CheckBoxCheckedDefaultBorderBrush" Color="#00BF63" />
-		<SolidColorBrush x:Key="CheckBoxCheckedDisabledBackground" Color="#BFF2D6" />
-		<SolidColorBrush x:Key="CheckBoxCheckedDisabledBorderBrush" Color="#BFF2D6" />
-		<SolidColorBrush x:Key="CheckBoxCheckedPointeroverBackground" Color="#00A957" />
-		<SolidColorBrush x:Key="CheckBoxCheckedPointeroverBorderBrush" Color="#00A957" />
-		<SolidColorBrush x:Key="CheckBoxCheckedPressedBackground" Color="#008F4A" />
-		<SolidColorBrush x:Key="CheckBoxCheckedPressedBorderBrush" Color="#008F4A" />
-		<SolidColorBrush x:Key="CheckBoxPointeroverBorderBrush" Color="#00A957" />
-		<SolidColorBrush x:Key="CheckBoxPressedBorderBrush" Color="#008F4A" />
+			<SolidColorBrush x:Key="AccentBrush" Color="#00BF63" />
+			<SolidColorBrush x:Key="AccentHoverBrush" Color="#00A957" />
+			<SolidColorBrush x:Key="AccentPressedBrush" Color="#008F4A" />
+			<SolidColorBrush x:Key="PrimaryButtonTextBrush" Color="#FFFFFF" />
+
+			<SolidColorBrush x:Key="ButtonSolidPrimaryBackground" Color="#00BF63" />
+			<SolidColorBrush x:Key="ButtonSolidPrimaryBorderBrush" Color="#00BF63" />
+			<SolidColorBrush x:Key="ButtonSolidPrimaryPointeroverBackground" Color="#00A957" />
+			<SolidColorBrush x:Key="ButtonSolidPrimaryPointeroverBorderBrush" Color="#00A957" />
+			<SolidColorBrush x:Key="ButtonSolidPrimaryPressedBackground" Color="#008F4A" />
+			<SolidColorBrush x:Key="ButtonSolidPrimaryPressedBorderBrush" Color="#008F4A" />
+
+			<SolidColorBrush x:Key="CheckBoxCheckedDefaultBackground" Color="#00BF63" />
+			<SolidColorBrush x:Key="CheckBoxCheckedDefaultBorderBrush" Color="#00BF63" />
+			<SolidColorBrush x:Key="CheckBoxCheckedDisabledBackground" Color="#5B8E70" />
+			<SolidColorBrush x:Key="CheckBoxCheckedDisabledBorderBrush" Color="#5B8E70" />
+			<SolidColorBrush x:Key="CheckBoxCheckedPointeroverBackground" Color="#00A957" />
+			<SolidColorBrush x:Key="CheckBoxCheckedPointeroverBorderBrush" Color="#00A957" />
+			<SolidColorBrush x:Key="CheckBoxCheckedPressedBackground" Color="#008F4A" />
+			<SolidColorBrush x:Key="CheckBoxCheckedPressedBorderBrush" Color="#008F4A" />
+			<SolidColorBrush x:Key="CheckBoxPointeroverBorderBrush" Color="#00A957" />
+			<SolidColorBrush x:Key="CheckBoxPressedBorderBrush" Color="#008F4A" />
+		</ResourceDictionary>
 	</Application.Resources>
 
 	<Application.Styles>
-		<semi:SemiTheme Locale="en-US" />
+		<semi:SemiTheme Locale="{x:Static localization:Strings.UiLocale}" />
+
+		<Style Selector="Window">
+			<Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
+		</Style>
 
 		<Style Selector="Button.Primary">
-			<Setter Property="Background"
-					Value="#00BF63" />
-			<Setter Property="BorderBrush"
-					Value="#00BF63" />
-			<Setter Property="Foreground"
-					Value="White" />
+			<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+			<Setter Property="Foreground" Value="{DynamicResource PrimaryButtonTextBrush}" />
 		</Style>
-
 		<Style Selector="Button.Primary:pointerover">
-			<Setter Property="Background"
-					Value="#00A957" />
-			<Setter Property="BorderBrush"
-					Value="#00A957" />
-			<Setter Property="Foreground"
-					Value="White" />
+			<Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
 		</Style>
-
 		<Style Selector="Button.Primary:pressed">
-			<Setter Property="Background"
-					Value="#008F4A" />
-			<Setter Property="BorderBrush"
-					Value="#008F4A" />
-			<Setter Property="Foreground"
-					Value="White" />
+			<Setter Property="Background" Value="{DynamicResource AccentPressedBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentPressedBrush}" />
 		</Style>
 
 		<Style Selector="Border.card">
-			<Setter Property="Background"
-					Value="White" />
-			<Setter Property="BorderBrush"
-					Value="#E2E8F0" />
-			<Setter Property="BorderThickness"
-					Value="1" />
-			<Setter Property="CornerRadius"
-					Value="24" />
-			<Setter Property="Padding"
-					Value="24" />
+			<Setter Property="Background" Value="{DynamicResource CardBackgroundBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource SurfaceBorderBrush}" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="CornerRadius" Value="24" />
+			<Setter Property="Padding" Value="24" />
 		</Style>
-
 		<Style Selector="Border.panel">
-			<Setter Property="Background"
-					Value="#F8FAFC" />
-			<Setter Property="BorderBrush"
-					Value="#E2E8F0" />
-			<Setter Property="BorderThickness"
-					Value="1" />
-			<Setter Property="CornerRadius"
-					Value="20" />
-			<Setter Property="Padding"
-					Value="16" />
+			<Setter Property="Background" Value="{DynamicResource PanelBackgroundBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource SurfaceBorderBrush}" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="CornerRadius" Value="18" />
+			<Setter Property="Padding" Value="15" />
 		</Style>
-
-		<Style Selector="Border.info">
-			<Setter Property="Background"
-					Value="#E8FFF2" />
-			<Setter Property="CornerRadius"
-					Value="18" />
-			<Setter Property="Padding"
-					Value="16" />
+		<Style Selector="Border.progress-panel">
+			<Setter Property="Background" Value="{DynamicResource ProgressBackgroundBrush}" />
+			<Setter Property="CornerRadius" Value="18" />
+			<Setter Property="Padding" Value="15" />
 		</Style>
-
-		<Style Selector="Border.tag">
-			<Setter Property="Background"
-					Value="#F1F5F9" />
-			<Setter Property="CornerRadius"
-					Value="14" />
-			<Setter Property="Margin"
-					Value="0,0,8,8" />
-			<Setter Property="Padding"
-					Value="12,6" />
+		<Style Selector="ProgressBar">
+			<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+			<Setter Property="Background" Value="{DynamicResource ProgressTrackBrush}" />
 		</Style>
 
 		<Style Selector="TextBlock.heading-large">
-			<Setter Property="FontSize"
-					Value="24" />
-			<Setter Property="FontWeight"
-					Value="SemiBold" />
-			<Setter Property="Foreground"
-					Value="#0F172A" />
+			<Setter Property="FontSize" Value="24" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
 		</Style>
-
 		<Style Selector="TextBlock.heading-medium">
-			<Setter Property="FontSize"
-					Value="22" />
-			<Setter Property="FontWeight"
-					Value="SemiBold" />
-			<Setter Property="Foreground"
-					Value="#0F172A" />
+			<Setter Property="FontSize" Value="22" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
 		</Style>
-
+		<Style Selector="TextBlock.field-label, TextBlock.section-label">
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
+		</Style>
 		<Style Selector="TextBlock.body-text">
-			<Setter Property="Foreground"
-					Value="#475569" />
+			<Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}" />
+		</Style>
+		<Style Selector="TextBlock.help-text, TextBlock.history-meta">
+			<Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}" />
+			<Setter Property="FontSize" Value="12" />
+		</Style>
+		<Style Selector="TextBlock.validation-text">
+			<Setter Property="Foreground" Value="{DynamicResource ErrorTextBrush}" />
+			<Setter Property="FontSize" Value="12" />
+		</Style>
+		<Style Selector="TextBlock.accent">
+			<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
 		</Style>
 
-		<Style Selector="TextBlock.accent">
-			<Setter Property="Foreground"
-					Value="#00BF63" />
+		<Style Selector="Border.history-entry">
+			<Setter Property="BorderBrush" Value="{DynamicResource SurfaceBorderBrush}" />
+			<Setter Property="BorderThickness" Value="0,0,0,1" />
+			<Setter Property="Padding" Value="6,8" />
+		</Style>
+		<Style Selector="Border.history-entry TextBlock.status-symbol">
+			<Setter Property="FontWeight" Value="Bold" />
+			<Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}" />
+		</Style>
+		<Style Selector="Border.history-entry.success TextBlock.status-symbol">
+			<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+		</Style>
+		<Style Selector="Border.history-entry.skipped TextBlock.status-symbol">
+			<Setter Property="Foreground" Value="{DynamicResource SkippedTextBrush}" />
+		</Style>
+		<Style Selector="Border.history-entry.failed TextBlock.status-symbol">
+			<Setter Property="Foreground" Value="{DynamicResource ErrorTextBrush}" />
+		</Style>
+		<Style Selector="Border.history-entry.failed TextBlock.history-result">
+			<Setter Property="Foreground" Value="{DynamicResource ErrorTextBrush}" />
+		</Style>
+		<Style Selector="Border.history-entry.summary">
+			<Setter Property="Background" Value="{DynamicResource SummaryBackgroundBrush}" />
+			<Setter Property="CornerRadius" Value="10" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Margin" Value="0,6,0,0" />
+			<Setter Property="Padding" Value="9" />
+		</Style>
+		<Style Selector="Border.history-entry.summary TextBlock.status-symbol">
+			<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+		</Style>
+		<Style Selector="Border.history-entry.summary.failed TextBlock.status-symbol">
+			<Setter Property="Foreground" Value="{DynamicResource ErrorTextBrush}" />
 		</Style>
 	</Application.Styles>
 </Application>
