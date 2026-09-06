@@ -40,13 +40,29 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(1, result.Skipped);
 		Assert.Equal(0, result.Failed);
 		AssertDecodableImage(outputPath);
-		Assert.Contains(progress.Updates, update => update.CurrentIndex == 1
-			&& update.TotalCount == 1
-			&& update.Message == "Converted 'camera.png' to JPEG.");
-		Assert.DoesNotContain(progress.Updates,
-			update => update.Message.Contains(" / ", StringComparison.Ordinal));
-		Assert.DoesNotContain(progress.Updates,
-			update => update.Message.Contains("Saved", StringComparison.OrdinalIgnoreCase));
+		Assert.Collection(
+			progress.Updates,
+			update =>
+			{
+				Assert.Equal(0, update.ProcessedCount);
+				Assert.Equal(2, update.TotalCount);
+				Assert.Null(update.Status);
+			},
+			update =>
+			{
+				Assert.Equal(1, update.ProcessedCount);
+				Assert.Equal(2, update.TotalCount);
+				Assert.Equal("camera.png", update.SourceFileName);
+				Assert.Equal("camera.jpg", update.TargetFileName);
+				Assert.Equal(ConversionStatus.Converted, update.Status);
+				Assert.Equal(ConversionErrorKind.None, update.ErrorKind);
+			},
+			update =>
+			{
+				Assert.Equal(2, update.ProcessedCount);
+				Assert.Equal(ConversionStatus.Skipped, update.Status);
+				Assert.Equal(ConversionErrorKind.UnsupportedFormat, update.ErrorKind);
+			});
 	}
 
 	/// <summary>
@@ -77,7 +93,10 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(0, result.Skipped);
 		Assert.Equal(0, result.Failed);
 		AssertDecodableImage(outputPath, expectedWidth: 1, expectedHeight: 1);
-		Assert.Contains(progress.Updates, update => update.Message == $"Converted '{fileName}' to PNG.");
+		Assert.Contains(progress.Updates, update =>
+			update.SourceFileName == fileName
+			&& update.TargetFileName == "camera.png"
+			&& update.Status == ConversionStatus.Converted);
 	}
 
 	/// <summary>
@@ -105,7 +124,10 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(1, result.Skipped);
 		Assert.Equal(0, result.Failed);
 		Assert.Empty(Directory.EnumerateFiles(workspace.OutputFolder));
-		Assert.Empty(progress.Updates);
+		Assert.Equal(2, progress.Updates.Count);
+		ImageConversionProgressUpdate update = progress.Updates[1];
+		Assert.Equal(ConversionStatus.Skipped, update.Status);
+		Assert.Equal(ConversionErrorKind.UnsupportedFormat, update.ErrorKind);
 	}
 
 	/// <summary>
@@ -132,8 +154,11 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(1, result.Skipped);
 		Assert.Equal(0, result.Failed);
 		Assert.Equal("existing content", File.ReadAllText(existingOutputPath));
-		Assert.Contains(progress.Updates, update => update.Message ==
-			"Skipped 'camera.png' because 'camera.jpg' already exists in the output folder.");
+		Assert.Contains(progress.Updates, update =>
+			update.SourceFileName == "camera.png"
+			&& update.TargetFileName == "camera.jpg"
+			&& update.Status == ConversionStatus.Skipped
+			&& update.ErrorKind == ConversionErrorKind.TargetExists);
 	}
 
 	/// <summary>
@@ -158,6 +183,7 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(1, result.Processed);
 		Assert.Equal(0, result.Skipped);
 		Assert.Equal(0, result.Failed);
+		Assert.Equal(1, result.Overwritten);
 		Assert.NotEqual(existingBytes, File.ReadAllBytes(existingOutputPath));
 		AssertDecodableImage(existingOutputPath);
 	}
@@ -208,8 +234,9 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(1, result.Skipped);
 		Assert.Equal(0, result.Failed);
 		Assert.True(File.Exists(inputPath));
-		Assert.Contains(progress.Updates, update => update.Level == LogLevel.Info
-			&& update.Message == "Skipped 'camera.png' because the source and output paths are identical.");
+		Assert.Contains(progress.Updates, update =>
+			update.Status == ConversionStatus.Skipped
+			&& update.ErrorKind == ConversionErrorKind.SourceMatchesTarget);
 	}
 
 	/// <summary>
@@ -235,8 +262,10 @@ public sealed class ImageConvertrServiceTests
 		Assert.Equal(0, result.Skipped);
 		Assert.Equal(1, result.Failed);
 		Assert.Empty(Directory.EnumerateFiles(workspace.OutputFolder));
-		Assert.Contains(progress.Updates, update => update.Level == LogLevel.Error
-			&& update.Message == "Failed to convert 'broken.jpg' because it could not be decoded.");
+		Assert.Contains(progress.Updates, update =>
+			update.SourceFileName == "broken.jpg"
+			&& update.Status == ConversionStatus.Failed
+			&& update.ErrorKind == ConversionErrorKind.DecodeFailed);
 	}
 
 	/// <summary>
