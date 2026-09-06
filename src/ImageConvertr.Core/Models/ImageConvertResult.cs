@@ -20,9 +20,14 @@ namespace ImageConvertr.Core.Models;
 /// (original file size - output file size) for all successfully processed images.
 /// Only positive savings are included.
 /// </param>
+/// <param name="Overwritten">
+/// The number of successfully converted images that replaced an existing target file.
+/// This value is included in <paramref name="Processed"/>.
+/// </param>
 public sealed record ImageConvertResult(
 	int Processed,
 	int Skipped,
 	int Failed,
-	double SavedMB
+	double SavedMB,
+	int Overwritten = 0
 );

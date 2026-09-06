@@ -1,4 +1,3 @@
-using System.Globalization;
 using ImageConvertr.Core.Models;
 using SkiaSharp;
 
@@ -41,38 +40,59 @@ public sealed class ImageConvertrService : IImageConvertrService
 		int processed = 0;
 		int skipped = 0;
 		int failed = 0;
+		int overwritten = 0;
 		long totalSavedBytes = 0;
 		string[] files = Directory.EnumerateFiles(imageInputPath, "*", SearchOption.TopDirectoryOnly).ToArray();
-		string[] imageFiles = files
-			.Where(file => IsSupportedImage(file))
-			.ToArray();
+		int totalFiles = files.Length;
+		progress?.Report(new ImageConversionProgressUpdate(
+			ProcessedCount: 0,
+			TotalCount: totalFiles,
+			SourceFileName: null,
+			TargetFileName: null,
+			SourceFormat: null,
+			TargetFormat: outputFormat.DisplayName,
+			Status: null));
 
-		skipped = files.Length - imageFiles.Length;
-		int totalImages = imageFiles.Length;
-
-		for (int index = 0; index < imageFiles.Length; index++)
+		for (int index = 0; index < files.Length; index++)
 		{
-			string file = imageFiles[index];
-			int currentIndex = index + 1;
+			string file = files[index];
+			int processedCount = index + 1;
 			FileInfo inputInfo = new(file);
-
-			progress?.Report(new ImageConversionProgressUpdate(
-				currentIndex,
-				totalImages,
-				$"Converting '{inputInfo.Name}' to {outputFormat.DisplayName}."));
-
 			string outputFileName =
 				Path.GetFileNameWithoutExtension(file) + outputFormat.FileExtension;
 			string outputPath = Path.Combine(imageOutputPath, outputFileName);
+			string sourceFormat = Path.GetExtension(file).TrimStart('.').ToUpperInvariant();
 
-			void ReportFailedConversion()
+			void Report(
+				ConversionStatus status,
+				ConversionErrorKind errorKind = ConversionErrorKind.None,
+				long? sourceFileSize = null,
+				long? targetFileSize = null)
+			{
+				progress?.Report(new ImageConversionProgressUpdate(
+					processedCount,
+					totalFiles,
+					inputInfo.Name,
+					outputFileName,
+					sourceFormat,
+					outputFormat.DisplayName,
+					status,
+					sourceFileSize,
+					targetFileSize,
+					errorKind));
+			}
+
+			void ReportFailedConversion(ConversionErrorKind errorKind)
 			{
 				failed++;
-				progress?.Report(new ImageConversionProgressUpdate(
-					currentIndex,
-					totalImages,
-					$"Failed to convert '{Path.GetFileName(file)}'.",
-					LogLevel.Error));
+				Report(ConversionStatus.Failed, errorKind);
+			}
+
+			if (!IsSupportedImage(file))
+			{
+				skipped++;
+				Report(ConversionStatus.Skipped, ConversionErrorKind.UnsupportedFormat);
+				continue;
 			}
 
 			if (Path.GetFullPath(file).Equals(
@@ -80,22 +100,16 @@ public sealed class ImageConvertrService : IImageConvertrService
 				StringComparison.OrdinalIgnoreCase))
 			{
 				skipped++;
-				progress?.Report(new ImageConversionProgressUpdate(
-					currentIndex,
-					totalImages,
-					$"Skipped '{inputInfo.Name}' because the source and output paths are identical.",
-					LogLevel.Info));
+				Report(ConversionStatus.Skipped, ConversionErrorKind.SourceMatchesTarget);
 				continue;
 			}
 
-			if (!overwriteExisting && File.Exists(outputPath))
+			bool targetExisted = File.Exists(outputPath);
+
+			if (!overwriteExisting && targetExisted)
 			{
 				skipped++;
-				progress?.Report(new ImageConversionProgressUpdate(
-					currentIndex,
-					totalImages,
-					$"Skipped '{inputInfo.Name}' because '{outputFileName}' already exists in the output folder.",
-					LogLevel.Info));
+				Report(ConversionStatus.Skipped, ConversionErrorKind.TargetExists);
 				continue;
 			}
 
@@ -106,12 +120,7 @@ public sealed class ImageConvertrService : IImageConvertrService
 
 				if (bitmap is null)
 				{
-					failed++;
-					progress?.Report(new ImageConversionProgressUpdate(
-						currentIndex,
-						totalImages,
-						$"Failed to convert '{inputInfo.Name}' because it could not be decoded.",
-						LogLevel.Error));
+					ReportFailedConversion(ConversionErrorKind.DecodeFailed);
 					continue;
 				}
 
@@ -120,12 +129,7 @@ public sealed class ImageConvertrService : IImageConvertrService
 
 				if (encodedData is null)
 				{
-					failed++;
-					progress?.Report(new ImageConversionProgressUpdate(
-						currentIndex,
-						totalImages,
-						$"Failed to convert '{inputInfo.Name}' because it could not be encoded.",
-						LogLevel.Error));
+					ReportFailedConversion(ConversionErrorKind.EncodeFailed);
 					continue;
 				}
 
@@ -138,40 +142,44 @@ public sealed class ImageConvertrService : IImageConvertrService
 				}
 
 				processed++;
+				if (targetExisted)
+				{
+					overwritten++;
+				}
 
+				long inputBytes = inputInfo.Length;
 				long outputBytes = new FileInfo(outputPath).Length;
-				long savedBytes = inputInfo.Length - outputBytes;
+				long savedBytes = inputBytes - outputBytes;
 
 				if (savedBytes > 0)
 				{
 					totalSavedBytes += savedBytes;
 				}
 
-				progress?.Report(new ImageConversionProgressUpdate(
-					currentIndex,
-					totalImages,
-					$"Converted '{inputInfo.Name}' to {outputFormat.DisplayName}.",
-					LogLevel.Success));
+				Report(
+					targetExisted ? ConversionStatus.Overwritten : ConversionStatus.Converted,
+					sourceFileSize: inputBytes,
+					targetFileSize: outputBytes);
 			}
 			catch (IOException)
 			{
-				ReportFailedConversion();
+				ReportFailedConversion(ConversionErrorKind.IoError);
 			}
 			catch (UnauthorizedAccessException)
 			{
-				ReportFailedConversion();
+				ReportFailedConversion(ConversionErrorKind.AccessDenied);
 			}
 			catch (ArgumentException)
 			{
-				ReportFailedConversion();
+				ReportFailedConversion(ConversionErrorKind.Generic);
 			}
 			catch (InvalidOperationException)
 			{
-				ReportFailedConversion();
+				ReportFailedConversion(ConversionErrorKind.Generic);
 			}
 			catch (NotSupportedException)
 			{
-				ReportFailedConversion();
+				ReportFailedConversion(ConversionErrorKind.Generic);
 			}
 		}
 
@@ -181,7 +189,8 @@ public sealed class ImageConvertrService : IImageConvertrService
 			processed,
 			skipped,
 			failed,
-			Math.Round(savedMB, 2));
+			Math.Round(savedMB, 2),
+			overwritten);
 	}
 
 	bool IsSupportedImage(string file)

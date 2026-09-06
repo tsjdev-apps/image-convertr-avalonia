@@ -1,5 +1,8 @@
+using System.Collections.Specialized;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using ImageConvertr.App.Resources.Localization;
 using ImageConvertr.App.ViewModels;
 
 namespace ImageConvertr.App.Views;
@@ -27,8 +30,9 @@ public partial class MainWindow : Window
 		ArgumentNullException.ThrowIfNull(viewModel);
 
 		DataContext = viewModel;
-		viewModel.PickImageFolderDelegate = () => PickFolderAsync("Please select the folder containing your images");
-		viewModel.PickOutputFolderDelegate = () => PickFolderAsync("Please select the output folder");
+		viewModel.PickImageFolderDelegate = () => PickFolderAsync(Strings.SourceFolder_PickerTitle);
+		viewModel.PickOutputFolderDelegate = () => PickFolderAsync(Strings.TargetFolder_PickerTitle);
+		viewModel.ConversionHistory.CollectionChanged += ConversionHistoryOnCollectionChanged;
 	}
 
 	/// <summary>
@@ -44,5 +48,20 @@ public partial class MainWindow : Window
 			});
 
 		return folders.Count > 0 ? folders[0].TryGetLocalPath() : null;
+	}
+
+	void ConversionHistoryOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		if (e.Action != NotifyCollectionChangedAction.Add
+			|| DataContext is not MainWindowViewModel { IsProcessing: true } viewModel
+			|| viewModel.ConversionHistory.Count == 0)
+		{
+			return;
+		}
+
+		ConversionHistoryEntry newestEntry = viewModel.ConversionHistory[^1];
+		Dispatcher.UIThread.Post(
+			() => ConversionHistoryListBox.ScrollIntoView(newestEntry),
+			DispatcherPriority.Background);
 	}
 }
